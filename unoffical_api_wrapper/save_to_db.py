@@ -32,6 +32,7 @@ def feed_database(api, db):
         for tournament in tournaments:
             db.add_tournament(tournament, league_id)
         
+        # TODO: Building
         # Get matches for each tournament
         # for tournament_id in tournament_ids:
         #     standings = api.get_standings(tournament_id)

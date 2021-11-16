@@ -68,10 +68,10 @@ class Matches(Base):
     stage = relationship("Stages", backref="matches")
     # teams
     team_1_id = Column(Integer, ForeignKey('teams.id'), nullable=False, index=True)
-    team_1 = relationship("Teams", backref="matches")
-    team_1_win = Column(Boolean)
     team_2_id = Column(Integer, ForeignKey('teams.id'), nullable=False, index=True)
-    team_2 = relationship("Teams", backref="matches")
+    team_1 = relationship("Teams", foreign_keys=[team_1_id])
+    team_2 = relationship("Teams", foreign_keys=[team_2_id])
+    team_1_win = Column(Boolean)
     team_2_win = Column(Boolean)
 
 

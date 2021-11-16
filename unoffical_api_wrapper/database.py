@@ -1,10 +1,12 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from models import Leagues, Tournaments, create_table
+from models import Leagues, Stages, Tournaments, create_table
 import dateparser
 
 
 class DBUtility:
+    """This class is used to store league data to database.
+    """
     
     def __init__(self, user: str, password: str, database: str) -> None:
         engine = create_engine(f'postgresql://{user}:{password}@localhost:5432/{database}')
@@ -49,5 +51,25 @@ class DBUtility:
             tournament_obj.league = league
     
         session.add(tournament_obj)
+        session.commit()
+        session.close()
+
+    def add_stage(self, stage, tournament_id):
+        session = self.Session()
+        tournament = session.query(Tournaments).filter_by(
+            riot_id=tournament_id
+        ).first()
+        exist_stage = session.query(Stages).join(Stages.tournament).\
+            filter(Tournaments.riot_id == tournament_id).\
+            filter_by(slug=stage["slug"]).first()
+        stage_obj = exist_stage if exist_stage is not None else Stages()
+        if exist_stage is None:
+            stage_obj.slug = stage["slug"]
+        stage_obj.name = stage["name"]
+        stage_obj.type = stage["type"]
+        if tournament:
+            stage_obj.tournament = tournament
+    
+        session.add(stage_obj)
         session.commit()
         session.close()

@@ -15,34 +15,34 @@ def parse_arguments():
 
 
 def feed_database(api, db):
-    # Get information from riot api
+    # LEAGUES
     leagues = api.get_leagues()
     league_ids = [l["id"] for l in leagues]
-            
-    # Save leagues to database
     for league in leagues:
         db.add_league(league)
+    
+    # TODO: ADD TEAMS
+    # TODO: ADD PLAYERS (on va re-add les players au niveau des matchs pour les changements d'equipes)
 
-    # Get tournaments for each league
+    # TOURNAMENTS
     for league_id in league_ids:
         tournaments = api.get_tournaments(league_id)
-        tournament_ids = [t["id"] for t in tournaments]
-        
-        # Save tournaments to database
+                
+        # STAGES
         for tournament in tournaments:
+            standings = api.get_standings(tournament["id"])
+            stages = standings[0]["stages"]
+            
+            # If no stages in tournament, don't add it
+            if len(stages) == 0:
+                continue
+            
+            # Add tournament
             db.add_tournament(tournament, league_id)
-        
-        # TODO: Building
-        # Get matches for each tournament
-        # for tournament_id in tournament_ids:
-        #     standings = api.get_standings(tournament_id)
-        #     stages = standings[0]["stages"]
             
-        #     if len(stages) == 0:
-        #         continue
-            
-        #     breakpoint() 
-            
+            # Add stages
+            for stage in stages:
+                db.add_stage(stage, tournament["id"])            
 
 
 if __name__ == '__main__':

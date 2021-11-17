@@ -67,8 +67,8 @@ class Matches(Base):
     stage_id = Column(Integer, ForeignKey('stages.id'), nullable=False, index=True)
     stage = relationship("Stages", backref="matches")
     # teams
-    team_1_id = Column(Integer, ForeignKey('teams.id'), nullable=False, index=True)
-    team_2_id = Column(Integer, ForeignKey('teams.id'), nullable=False, index=True)
+    team_1_id = Column(Integer, ForeignKey('teams.id'), nullable=True, index=True)
+    team_2_id = Column(Integer, ForeignKey('teams.id'), nullable=True, index=True)
     team_1 = relationship("Teams", foreign_keys=[team_1_id])
     team_2 = relationship("Teams", foreign_keys=[team_2_id])
     team_1_win = Column(Boolean)
@@ -80,15 +80,15 @@ class Teams(Base):
 
     id = Column(Integer, primary_key=True)
     riot_id = Column('riot_id', String(50), unique=True)
-    slug = Column('slug', String(50), unique=True)
-    code = Column('code', String(50), unique=True)
+    slug = Column('slug', String(50))
+    code = Column('code', String(50))
     name = Column('name', String(150))
     image = Column('image', String(150))
     alt_image = Column('alt_image', String(150))
     bg_image = Column('bg_image', String(150))
     status = Column('status', String(50))
     # League
-    league_id = Column(Integer, ForeignKey('leagues.id'), nullable=False, index=True)
+    league_id = Column(Integer, ForeignKey('leagues.id'), nullable=True, index=True)
     league = relationship("Leagues", backref="teams")
 
 
@@ -97,14 +97,14 @@ class Players(Base):
 
     id = Column(Integer, primary_key=True)
     riot_id = Column('riot_id', String(50), unique=True)
-    summoner_name = Column('summoner_name', String(50), unique=True)
+    summoner_name = Column('summoner_name', String(50))
     first_name = Column('first_name', String(50))
     last_name = Column('last_name', String(50))
     image = Column('image', String(150))
     role = Column('role', String(50))
     # Current team
-    current_team_id = Column(Integer, ForeignKey('leagues.id'), nullable=False, index=True)
-    current_team = relationship("Leagues", backref="current_players")
+    current_team_id = Column(Integer, ForeignKey('teams.id'), nullable=False, index=True)
+    current_team = relationship("Teams", backref="current_players")
     # Teams
     teams = relationship("Teams",
                          secondary=player_team_association_table,

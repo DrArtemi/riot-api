@@ -17,16 +17,25 @@ def parse_arguments():
 def feed_database(api, db):
     # LEAGUES
     leagues = api.get_leagues()
-    league_ids = [l["id"] for l in leagues]
     for league in leagues:
         db.add_league(league)
     
-    # TODO: ADD TEAMS
-    # TODO: ADD PLAYERS (on va re-add les players au niveau des matchs pour les changements d'equipes)
+    teams = api.get_teams()
+    for team in teams:
+        # (tdb = invalid)
+        if team["status"] == "archived" or team["slug"] == 'tbd':
+            continue
+        players = team.pop("players")
+        # Add team
+        db.add_team(team)
+        
+        # Add players
+        for player in players:
+            db.add_player(player, team["id"])
 
     # TOURNAMENTS
-    for league_id in league_ids:
-        tournaments = api.get_tournaments(league_id)
+    for league in leagues:
+        tournaments = api.get_tournaments(league["id"])
                 
         # STAGES
         for tournament in tournaments:
@@ -38,11 +47,22 @@ def feed_database(api, db):
                 continue
             
             # Add tournament
-            db.add_tournament(tournament, league_id)
+            db.add_tournament(tournament, league["id"])
             
             # Add stages
             for stage in stages:
-                db.add_stage(stage, tournament["id"])            
+                sections = stage.pop("sections", [])
+                db.add_stage(stage, tournament["id"])
+                
+                # Add matches
+                matches = []
+                for section in sections:
+                    for match in section["matches"]:
+                        match["section"] = section["name"]
+                        matches.append(match.copy())
+                
+                for match in matches:
+                    db.add_match(match, stage, tournament["id"], league["id"])
 
 
 if __name__ == '__main__':

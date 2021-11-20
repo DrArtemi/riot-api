@@ -15,17 +15,6 @@ export const League = objectType({
 	}
 })
 
-// riot_id           String?       @unique @db.VarChar(50)
-//   slug              String?       @unique @db.VarChar(50)
-//   name              String?       @db.VarChar(150)
-//   region            String?       @db.VarChar(50)
-//   image_url         String?       @db.VarChar(150)
-//   priority          Int?
-//   priority_position Int?
-//   priority_status   String?       @db.VarChar(50)
-//   teams             teams[]
-//   tournaments       tournaments[]
-
 export const LeagueQuery = extendType({
 	type: 'Query',
 	definition(t) {
@@ -49,15 +38,15 @@ export const LeaguesQuery = extendType({
 	}
 })
 
-export const LeagueByNameQuery = extendType({
+export const LeagueBySlugQuery = extendType({
 	type: 'Query',
 	definition(t) {
-		t.field('leagueByName', {
+		t.field('leagueBySlug', {
 			type: 'League',
 			args: {
-				uid: nonNull(stringArg())
+				slug: nonNull(stringArg())
 			},
-			resolve: (_root, { name }, ctx) => ctx.db.leagues.findFirst({ where: { name } })
+			resolve: (_root, { slug }, ctx) => ctx.db.leagues.findFirst({ where: { slug } })
 		})
 	}
 })

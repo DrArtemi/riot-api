@@ -1,7 +1,7 @@
 import { nonNull, objectType, extendType, intArg, list, enumType, stringArg } from 'nexus'
 
-export const Champion = objectType({
-	name: 'Champion',
+export const Players = objectType({
+	name: 'Player',
 	definition(t) {
 		t.nonNull.id('id', { description: 'The player unique ID' })
         t.nonNull.string('riot_id')
@@ -10,28 +10,8 @@ export const Champion = objectType({
 		t.nonNull.string('last_name')
         t.nonNull.string('image')
         t.nonNull.string('role')
-        t.list.nonNull.field('teams', { type: Team })
-
-		t.nonNull.int('BE')
-		t.nonNull.int('RP')
-		t.list.nonNull.field('attributes', { type: ChampionAttribute })
-		t.nonNull.string('resource')
-		t.nonNull.float('health')
-		t.nonNull.int('HPLevel')
-		t.nonNull.float('HPRegen')
-		t.nonNull.float('HPRegenLevel')
 	}
 })
-
-// riot_id         String?      @unique @db.VarChar(50)
-//   summoner_name   String?      @db.VarChar(50)
-//   first_name      String?      @db.VarChar(50)
-//   last_name       String?      @db.VarChar(50)
-//   image           String?      @db.VarChar(150)
-//   role            String?      @db.VarChar(50)
-//   current_team_id Int
-//   teams           teams        @relation(fields: [current_team_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-//   PlayerTeam      PlayerTeam[]
 
 export const PlayerQuery = extendType({
 	type: 'Query',
@@ -39,22 +19,32 @@ export const PlayerQuery = extendType({
 		t.field('playerById', {
 			type: 'Player',
 			args: {
-				uid: nonNull(intArg())
+				id: nonNull(intArg())
 			},
 			resolve: (_root, { id }, ctx) => ctx.db.players.findUnique({ where: { id } })
 		})
 	}
 })
 
-export const PlayerQuery = extendType({
+export const PlayersQuery = extendType({
 	type: 'Query',
 	definition(t) {
-		t.field('playerById', {
+		t.field('allPlayers', {
+			type: list('Player'),
+			resolve: (_root, _, ctx) => ctx.db.players.findMany()
+		})
+	}
+})
+
+export const PlayerNameQuery = extendType({
+	type: 'Query',
+	definition(t) {
+		t.field('playerByName', {
 			type: 'Player',
 			args: {
-				uid: nonNull(intArg())
+				name: nonNull(stringArg())
 			},
-			resolve: (_root, { id }, ctx) => ctx.db.players.findUnique({ where: { id } })
+			resolve: (_root, { name }, ctx) => ctx.db.players.findUnique({ where: { name } })
 		})
 	}
 })

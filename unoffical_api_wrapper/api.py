@@ -129,9 +129,7 @@ class RiotUnofficialApi:
             else:
                 f_player[0].update(player)
         final_state["red_team"].update(frames["redTeam"])
-        
-        breakpoint()
-        
+                
         return final_state
         
 
@@ -172,20 +170,6 @@ class RiotUnofficialApi:
         }
         
         return self.parse_game(game)
-        
-        
-        # blue_team_data = dict()
-        # blue_players_data = dict()
-        # red_team_data = dict()
-        # red_players_data = dict()
-        # # extract blue_players_data
-        # blue_players_data.update({"participantMetadata": g_data["blueTeamMetadata"].pop("participantMetadata")})
-        # blue_team_data.update(g_data["blueTeamMetadata"])
-
-        # print(game["final_state"]["blueTeam"].keys())
-        # blue_players_data.update({"final_state_team_participantMetadata": game["final_state"]["blueTeam"].pop("participants")})
-        # blue_team_data.update(game["final_state"]["blueTeam"])
-        # blue_players_data
 
 
 def get_usable_date():

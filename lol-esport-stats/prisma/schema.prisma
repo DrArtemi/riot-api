@@ -10,8 +10,8 @@ datasource db {
 model PlayerTeam {
   team_id   Int
   player_id Int
-  players   players @relation(fields: [player_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  teams     teams   @relation(fields: [team_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  player   players @relation(fields: [player_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  team     teams   @relation(fields: [team_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@id([team_id, player_id])
 }
@@ -39,13 +39,9 @@ model matches {
   team_2_id                      Int?
   team_1_win                     Boolean?
   team_2_win                     Boolean?
-  stages                         stages   @relation(fields: [stage_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  teams_matches_team_1_idToteams teams?   @relation("matches_team_1_idToteams", fields: [team_1_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  teams_matches_team_2_idToteams teams?   @relation("matches_team_2_idToteams", fields: [team_2_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-
-  @@index([stage_id], map: "ix_matches_stage_id")
-  @@index([team_1_id], map: "ix_matches_team_1_id")
-  @@index([team_2_id], map: "ix_matches_team_2_id")
+  stage                          stages   @relation(fields: [stage_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  team_1                         teams?   @relation("matches_team_1", fields: [team_1_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  team_2                         teams?   @relation("matches_team_2", fields: [team_2_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model players {
@@ -56,11 +52,9 @@ model players {
   last_name       String?      @db.VarChar(50)
   image           String?      @db.VarChar(150)
   role            String?      @db.VarChar(50)
+  current_team    teams        @relation(fields: [current_team_id], references: [id])
   current_team_id Int
-  teams           teams        @relation(fields: [current_team_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  PlayerTeam      PlayerTeam[]
-
-  @@index([current_team_id], map: "ix_players_current_team_id")
+  teams           PlayerTeam[]
 }
 
 model stages {
@@ -69,10 +63,8 @@ model stages {
   name          String?     @db.VarChar(150)
   type          String?     @db.VarChar(50)
   tournament_id Int
-  tournaments   tournaments @relation(fields: [tournament_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  tournament    tournaments @relation(fields: [tournament_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   matches       matches[]
-
-  @@index([tournament_id], map: "ix_stages_tournament_id")
 }
 
 model teams {
@@ -86,13 +78,11 @@ model teams {
   bg_image                         String?      @db.VarChar(150)
   status                           String?      @db.VarChar(50)
   league_id                        Int?
-  leagues                          leagues?     @relation(fields: [league_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  PlayerTeam                       PlayerTeam[]
-  matches_matches_team_1_idToteams matches[]    @relation("matches_team_1_idToteams")
-  matches_matches_team_2_idToteams matches[]    @relation("matches_team_2_idToteams")
-  players                          players[]
-
-  @@index([league_id], map: "ix_teams_league_id")
+  league                           leagues?     @relation(fields: [league_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  players                          PlayerTeam[]
+  matches_team_1                   matches[]    @relation("matches_team_1")
+  matches_team_2                   matches[]    @relation("matches_team_2")
+  current_players                  players[]
 }
 
 model tournaments {
@@ -102,8 +92,6 @@ model tournaments {
   start_date DateTime? @db.Timestamp(6)
   end_date   DateTime? @db.Timestamp(6)
   league_id  Int
-  leagues    leagues   @relation(fields: [league_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  league     leagues   @relation(fields: [league_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   stages     stages[]
-
-  @@index([league_id], map: "ix_tournaments_league_id")
 }

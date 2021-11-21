@@ -1,4 +1,5 @@
 import { nonNull, objectType, extendType, intArg, list, enumType, stringArg } from 'nexus'
+import { Tournament } from './Tournament'
 
 export const Stage = objectType({
 	name: 'Stage',
@@ -7,6 +8,7 @@ export const Stage = objectType({
         t.nonNull.string('slug')
 		t.nonNull.string('name')
 		t.nonNull.string('type')
+		t.nonNull.field('tournament', { type: Tournament })
 	}
 })
 

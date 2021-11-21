@@ -1,4 +1,6 @@
 import { nonNull, objectType, extendType, intArg, list, stringArg } from 'nexus'
+import { Tournament } from './Tournament'
+import { Team } from './Team'
 
 export const League = objectType({
 	name: 'League',
@@ -12,6 +14,8 @@ export const League = objectType({
         t.nonNull.int('priority')
         t.nonNull.int('priority_position')
         t.nonNull.string('priority_status')
+		t.list.nonNull.field('teams', { type: Team })
+		t.list.nonNull.field('tournaments', { type: Tournament })
 	}
 })
 

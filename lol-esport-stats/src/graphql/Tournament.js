@@ -1,4 +1,6 @@
 import { nonNull, objectType, extendType, intArg, list, scalarType, stringArg } from 'nexus'
+import { Stage } from './Stage'
+import { League } from './League'
 
 const DateScalar = scalarType({
 	name: 'Date',
@@ -26,6 +28,8 @@ export const Tournament = objectType({
 		t.nonNull.string('slug')
 		t.nonNull.field('start_date', { type: DateScalar })
         t.nonNull.field('end_date', { type: DateScalar })
+		t.nonNull.field('league', { type: League })
+		t.list.nonNull.field('stage', { type: Stage })
 	}
 })
 

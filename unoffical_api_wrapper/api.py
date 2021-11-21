@@ -1,4 +1,6 @@
+from typing import final
 import requests
+import datetime
 
 
 class RiotUnofficialApi:
@@ -81,7 +83,121 @@ class RiotUnofficialApi:
             params=self.params
         )
         return teams.json()['data']['teams']
+    
+    @staticmethod
+    def parse_game(data):
+        final_state = {
+            "timestamp": data["frames"]["rfc460Timestamp"],
+            "blue_team": {
+                "players": []
+            },
+            "red_team": {
+                "players": []
+            }
+        }
+        
+        # Parse data from game state
+        final_state["blue_team"]["players"] += data["blueTeamMetadata"].pop("participantMetadata")
+        final_state["blue_team"].update(data["blueTeamMetadata"])
+        final_state["red_team"]["players"] += data["redTeamMetadata"].pop("participantMetadata")
+        final_state["red_team"].update(data["redTeamMetadata"])
+                
+        # Parse data from frames
+        frames = data.pop("frames")
+        tmp_players = frames.pop("participants")
+        for player in tmp_players:
+            f_blue_player = [p for p in final_state["blue_team"]["players"] if p["participantId"] == player["participantId"]]
+            f_red_player = [p for p in final_state["red_team"]["players"] if p["participantId"] == player["participantId"]]
+            f_player = f_blue_player + f_red_player
+            if len(f_player) > 0:
+                f_player[0].update(player)
+        # Parse data from teams
+        tmp_players = frames["blueTeam"].pop("participants")
+        for player in tmp_players:
+            f_player = [p for p in final_state["blue_team"]["players"] if p["participantId"] == player["participantId"]]
+            if len(f_player) == 0:
+                final_state["blue_team"]["players"].append(player)
+            else:
+                f_player[0].update(player)
+        final_state["blue_team"].update(frames["blueTeam"])
+        
+        tmp_players = frames["redTeam"].pop("participants")
+        for player in tmp_players:
+            f_player = [p for p in final_state["red_team"]["players"] if p["participantId"] == player["participantId"]]
+            if len(f_player) == 0:
+                final_state["red_team"]["players"].append(player)
+            else:
+                f_player[0].update(player)
+        final_state["red_team"].update(frames["redTeam"])
+        
+        breakpoint()
+        
+        return final_state
+        
 
+    def get_match_details(self, match_id) -> dict:
+        params = dict(
+            self.params,
+            startingTime=get_usable_date(),
+        )
+        # Game ID = Match ID + 1
+        match_details = requests.get(
+            url=f"https://feed.lolesports.com/livestats/v1/details/{int(match_id) + 1}",
+            headers=self.headers,
+            params=params
+        )
+        if match_details.status_code != 200:
+            raise match_details.raise_for_status()
+        match_details = match_details.json()
+        match_frames = match_details["frames"]
+        
+        game_details = requests.get(
+            url=f"https://feed.lolesports.com/livestats/v1/window/{int(match_id) + 1}",
+            headers=self.headers,
+            params=params
+        )
+        if game_details.status_code != 200:
+            raise game_details.raise_for_status()
+        game_details = game_details.json()
+        game_metadata = game_details["gameMetadata"]
+        game_frames = game_details["frames"]
+        
+        # Merge last frames from match and game to get final state
+        final_state = match_frames[-1]
+        final_state.update(game_frames[-1])
+        
+        game = {
+            **game_metadata,
+            "frames": final_state
+        }
+        
+        return self.parse_game(game)
+        
+        
+        # blue_team_data = dict()
+        # blue_players_data = dict()
+        # red_team_data = dict()
+        # red_players_data = dict()
+        # # extract blue_players_data
+        # blue_players_data.update({"participantMetadata": g_data["blueTeamMetadata"].pop("participantMetadata")})
+        # blue_team_data.update(g_data["blueTeamMetadata"])
+
+        # print(game["final_state"]["blueTeam"].keys())
+        # blue_players_data.update({"final_state_team_participantMetadata": game["final_state"]["blueTeam"].pop("participants")})
+        # blue_team_data.update(game["final_state"]["blueTeam"])
+        # blue_players_data
+
+
+def get_usable_date():
+    mydate = datetime.datetime.now()
+    minute = datetime.timedelta(minutes=120)
+    mydate_final = (mydate - minute).strftime("%Y-%m-%dT%H:%M:%S")
+    head = mydate_final[:-2]
+    tail = round(int(mydate_final[-2:]), -1)
+    sec = str(tail)
+    if len(sec) < 2:
+        sec = '0' + sec
+    return head + str(sec) + 'Z'
 
 
 if __name__ == '__main__':
@@ -92,4 +208,4 @@ if __name__ == '__main__':
         lang="en-US"
     )
     
-    print(api.get_teams())
+    print(api.get_match_details("105568157422015211"))

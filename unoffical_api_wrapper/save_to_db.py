@@ -1,6 +1,8 @@
+from tqdm import tqdm
 import argparse
 from api import RiotUnofficialApi
 from database import DBUtility
+from time import sleep
 
 
 def parse_arguments():
@@ -17,11 +19,10 @@ def parse_arguments():
 def feed_database(api, db):
     # LEAGUES
     leagues = api.get_leagues()
-    for league in leagues:
+    for league in tqdm(leagues, desc="Leagues"):
         db.add_league(league)
-    
     teams = api.get_teams()
-    for team in teams:
+    for team in tqdm(teams, desc="Teams"):
         # (tdb = invalid)
         if team["status"] == "archived" or team["slug"] == 'tbd':
             continue
@@ -30,15 +31,15 @@ def feed_database(api, db):
         db.add_team(team)
         
         # Add players
-        for player in players:
+        for player in tqdm(players, desc="Players"):
             db.add_player(player, team["id"])
 
     # TOURNAMENTS
-    for league in leagues:
+    for league in tqdm(leagues, desc="Leagues"):
         tournaments = api.get_tournaments(league["id"])
                 
         # STAGES
-        for tournament in tournaments:
+        for tournament in tqdm(tournaments, desc="Tournaments"):
             standings = api.get_standings(tournament["id"])
             stages = standings[0]["stages"]
             
@@ -50,7 +51,7 @@ def feed_database(api, db):
             db.add_tournament(tournament, league["id"])
             
             # Add stages
-            for stage in stages:
+            for stage in tqdm(stages, desc="Stages"):
                 sections = stage.pop("sections", [])
                 db.add_stage(stage, tournament["id"])
                 
@@ -61,8 +62,12 @@ def feed_database(api, db):
                         match["section"] = section["name"]
                         matches.append(match.copy())
                 
-                for match in matches:
-                    db.add_match(match, stage, tournament["id"], league["id"])
+                for match in tqdm(matches, desc="Matches"):
+                    match_final_state = api.get_match_details(match["id"])
+                    match_evolution = api.get_match_evolution(match["id"], freq=60)
+                    db.add_match(match, stage, tournament["id"], league["id"],
+                                 match_final_state=match_final_state,
+                                 match_evolution=match_evolution)
 
 
 if __name__ == '__main__':

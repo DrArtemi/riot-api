@@ -69,6 +69,8 @@ class RiotUnofficialApi:
             headers=self.headers,
             params=params
         )
+        if tournament_standings.status_code != 200:
+            raise tournament_standings.raise_for_status()
         return tournament_standings.json()['data']['standings']
     
     def get_teams(self) -> list:
@@ -82,10 +84,20 @@ class RiotUnofficialApi:
             headers=self.headers,
             params=self.params
         )
+        if teams.status_code != 200:
+            raise teams.raise_for_status()
         return teams.json()['data']['teams']
     
     @staticmethod
-    def parse_game(data):
+    def parse_game(data: dict) -> dict:
+        """Clean merged data from game and match frames.
+
+        Args:
+            data (dict): Raw data of game and match frames merge.
+
+        Returns:
+            dict: Cleaned data.
+        """
         final_state = {
             "timestamp": data["frames"]["rfc460Timestamp"],
             "blue_team": {
@@ -133,7 +145,19 @@ class RiotUnofficialApi:
         return final_state
         
 
-    def get_match_details(self, match_id) -> dict:
+    def get_match_details(self, match_id: str) -> dict:
+        """This endpoint fetches match final state details.
+
+        Args:
+            match_id (str): Match id to fetch.
+
+        Raises:
+            match_details.raise_for_status: Error if match doesn't exist.
+            game_details.raise_for_status: Error if game doesn't exist.
+
+        Returns:
+            dict: Cleaned match detailed data.
+        """
         params = dict(
             self.params,
             startingTime=get_usable_date(),
@@ -145,7 +169,7 @@ class RiotUnofficialApi:
             params=params
         )
         if match_details.status_code != 200:
-            raise match_details.raise_for_status()
+            return None
         match_details = match_details.json()
         match_frames = match_details["frames"]
         
@@ -155,7 +179,7 @@ class RiotUnofficialApi:
             params=params
         )
         if game_details.status_code != 200:
-            raise game_details.raise_for_status()
+            return None
         game_details = game_details.json()
         game_metadata = game_details["gameMetadata"]
         game_frames = game_details["frames"]
@@ -170,6 +194,76 @@ class RiotUnofficialApi:
         }
         
         return self.parse_game(game)
+    
+    @staticmethod
+    def get_team_stats(team, frames):
+        res = dict()
+        for key in frames[0][team]:
+            if key == "participants":
+                res[key] = dict()
+                for idx, p in enumerate(frames[0][team]["participants"]):
+                    p_id = p.get("participantId")
+                    res[key][p_id] = dict()
+                    for k in p:
+                        if k == "participantId":
+                            continue
+                        res[key][p_id][k] = [f[team][key][idx][k] for f in frames]
+            else:
+                res[key] = [f[team][key] for f in frames]
+        return res
+    
+    def get_match_evolution(self, match_id: str, freq: int = 10) -> dict:
+        """Fetches metric through the game.
+
+        Args:
+            match_id (str): Match id to fetch.
+            freq (int, optional): Metrics update frequency in seconds.
+            Defaults to 10.
+
+        Returns:
+            dict: Final data.
+        """
+        
+        # Gather all game windows
+        game_id = int(match_id) + 1
+        params = dict()
+        frames = requests.get(
+            url=f"https://feed.lolesports.com/livestats/v1/window/{game_id}",
+            headers=self.headers,
+            params=params
+        )
+        if frames.status_code != 200:
+            return None
+        frame = frames.json()["frames"][-1]
+        time = frame["rfc460Timestamp"]
+        frame_list = [frame]
+        while frame and frame["gameState"] == "in_game":
+            splitted_time = time.split('.')
+            full_date = splitted_time[0][:-1] if len(splitted_time) < 2 else splitted_time[0]
+            date_time_obj = datetime.datetime.strptime(full_date, "%Y-%m-%dT%H:%M:%S")
+            delta_seconds = datetime.timedelta(seconds=freq)
+            final_time = (date_time_obj + delta_seconds).strftime("%Y-%m-%dT%H:%M:%S")
+            final_time = final_time[:-1] + "0Z"  # Floor seconds + add Z idk why
+            params["startingTime"] = final_time
+            frames = requests.get(
+                url=f"https://feed.lolesports.com/livestats/v1/window/{game_id}",
+                headers=self.headers,
+                params=params
+            )
+            if frames.status_code != 200:
+                raise frames.raise_for_status()
+            frame = frames.json()["frames"][-1]
+            time = frame["rfc460Timestamp"]
+            frame_list.append(frame)
+        
+        # Parse data from windows
+        final_dict = dict()
+        final_dict["timestamps"] = [f["rfc460Timestamp"] for f in frame_list]
+        final_dict["blueTeam"] = self.get_team_stats("blueTeam", frame_list)
+        final_dict["redTeam"] = self.get_team_stats("redTeam", frame_list)
+        
+        return final_dict
+        
 
 
 def get_usable_date():
@@ -192,4 +286,6 @@ if __name__ == '__main__':
         lang="en-US"
     )
     
-    print(api.get_match_details("105568157422015211"))
+    # print(api.get_match_details("105568157422015211"))
+
+    print(api.get_match_evolution("105568157422015211"))

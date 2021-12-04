@@ -62,6 +62,8 @@ class Matches(Base):
     id = Column(Integer, primary_key=True)
     riot_id = Column('riot_id', String(50), unique=True)
     state = Column('state', String(50))
+    final_state = Column('final_state', String())
+    evolution = Column('evolution', String())
     
     # Tournament
     stage_id = Column(Integer, ForeignKey('stages.id'), nullable=False, index=True)

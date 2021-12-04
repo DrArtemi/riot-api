@@ -2,6 +2,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from models import Leagues, Matches, Players, Stages, Teams, Tournaments, create_table
 import dateparser
+import json
 
 
 class DBUtility:
@@ -119,7 +120,7 @@ class DBUtility:
         session.commit()
         session.close()
 
-    def add_match(self, match, stage, tournament_id, league_id):
+    def add_match(self, match, stage, tournament_id, league_id, match_final_state=None, match_evolution=None):
         session = self.Session()
         with session.no_autoflush:
             exist_stage = session.query(Stages).join(Stages.tournament).\
@@ -131,6 +132,10 @@ class DBUtility:
             if exist_match is None:
                 match_obj.riot_id = match["id"]
             match_obj.state = match["state"]
+            if match_final_state:
+                match_obj.final_state = json.dumps(match_final_state, separators=(',', ':'))
+            if match_evolution:
+                match_obj.evolution = json.dumps(match_evolution, separators=(',', ':'))
             if exist_stage:
                 match_obj.stage = exist_stage
             

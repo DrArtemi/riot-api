@@ -20,7 +20,12 @@ export const StageQuery = extendType({
 			args: {
 				id: nonNull(intArg())
 			},
-			resolve: (_root, { id }, ctx) => ctx.db.stages.findUnique({ where: { id } })
+			resolve: (_root, { id }, ctx) => ctx.db.stages.findUnique({
+				where: { id },
+				include: {
+					matches: true
+				}
+			})
 		})
 	}
 })
@@ -30,7 +35,11 @@ export const StagesQuery = extendType({
 	definition(t) {
 		t.field('allStages', {
 			type: list('Stage'),
-			resolve: (_root, _, ctx) => ctx.db.stages.findMany()
+			resolve: (_root, _, ctx) => ctx.db.stages.findMany({
+				include: {
+					matches: true
+				}
+			})
 		})
 	}
 })
@@ -43,7 +52,12 @@ export const StageSlugQuery = extendType({
 			args: {
 				slug: nonNull(stringArg())
 			},
-			resolve: (_root, { slug }, ctx) => ctx.db.stages.findUnique({ where: { slug } })
+			resolve: (_root, { slug }, ctx) => ctx.db.stages.findUnique({
+				where: { slug },
+				include: {
+					matches: true
+				}
+			})
 		})
 	}
 })

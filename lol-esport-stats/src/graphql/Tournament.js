@@ -29,7 +29,7 @@ export const Tournament = objectType({
 		t.nonNull.field('start_date', { type: DateScalar })
         t.nonNull.field('end_date', { type: DateScalar })
 		t.nonNull.field('league', { type: League })
-		t.list.nonNull.field('stage', { type: Stage })
+		t.list.nonNull.field('stages', { type: Stage })
 	}
 })
 
@@ -41,7 +41,12 @@ export const TournamentQuery = extendType({
 			args: {
 				id: nonNull(intArg())
 			},
-			resolve: (_root, { id }, ctx) => ctx.db.tournaments.findUnique({ where: { id } })
+			resolve: (_root, { id }, ctx) => ctx.db.tournaments.findUnique({
+				where: { id },
+				include: {
+					stages: true
+				}
+			})
 		})
 	}
 })
@@ -51,7 +56,11 @@ export const TournamentsQuery = extendType({
 	definition(t) {
 		t.field('allTournaments', {
 			type: list('Tournament'),
-			resolve: (_root, _, ctx) => ctx.db.tournaments.findMany()
+			resolve: (_root, _, ctx) => ctx.db.tournaments.findMany({
+				include: {
+					stages: true
+				}
+			})
 		})
 	}
 })
@@ -64,7 +73,12 @@ export const TournamentSlugQuery = extendType({
 			args: {
 				slug: nonNull(stringArg())
 			},
-			resolve: (_root, { slug }, ctx) => ctx.db.tournaments.findUnique({ where: { slug } })
+			resolve: (_root, { slug }, ctx) => ctx.db.tournaments.findUnique({
+				where: { slug },
+				include: {
+					stages: true
+				}
+			})
 		})
 	}
 })

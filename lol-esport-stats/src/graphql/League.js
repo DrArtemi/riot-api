@@ -27,7 +27,12 @@ export const LeagueQuery = extendType({
 			args: {
 				id: nonNull(intArg())
 			},
-			resolve: (_root, { id }, ctx) => ctx.db.leagues.findUnique({ where: { id } })
+			resolve: (_root, { id }, ctx) => ctx.db.leagues.findUnique({
+				where: { id },
+				include: {
+					tournaments: true
+				}
+			})
 		})
 	}
 })
@@ -37,7 +42,11 @@ export const LeaguesQuery = extendType({
 	definition(t) {
 		t.field('allLeagues', {
 			type: list('League'),
-			resolve: (_root, _, ctx) => ctx.db.leagues.findMany()
+			resolve: (_root, _, ctx) => ctx.db.leagues.findMany({
+				include: {
+					tournaments: true
+				}
+			})
 		})
 	}
 })
@@ -50,7 +59,44 @@ export const LeagueBySlugQuery = extendType({
 			args: {
 				slug: nonNull(stringArg())
 			},
-			resolve: (_root, { slug }, ctx) => ctx.db.leagues.findFirst({ where: { slug } })
+			resolve: (_root, { slug }, ctx) => ctx.db.leagues.findFirst({
+				where: { slug },
+				include: {
+					tournaments: true
+				}
+			})
+		})
+	}
+})
+
+export const SearchLeaguesQuery = extendType({
+	type: 'Query',
+	definition(t) {
+		t.field('searchLeagues', {
+			type: list('League'),
+			args: {
+				search: stringArg()
+			},
+			resolve: (_root, { search }, ctx) => {
+				console.log(search);
+				if (!search)
+					return ctx.db.leagues.findMany({
+						include: {
+							tournaments: true
+						}
+					});
+				return ctx.db.leagues.findMany({
+					where: {
+						name: {
+							contains: search,
+							mode: 'insensitive',
+						}
+					},
+					include: {
+						tournaments: true
+					}
+				})
+			}
 		})
 	}
 })

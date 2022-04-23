@@ -63,11 +63,9 @@ def feed_database(api, db):
                         matches.append(match.copy())
                 
                 for match in tqdm(matches, desc="Matches"):
-                    match_final_state = api.get_match_details(match["id"])
-                    match_evolution = api.get_match_evolution(match["id"], freq=60)
-                    db.add_match(match, stage, tournament["id"], league["id"],
-                                 match_final_state=match_final_state,
-                                 match_evolution=match_evolution)
+                    # match_final_state = api.get_match_details(match["id"])
+                    # match_evolution = api.get_match_evolution(match["id"], freq=60)
+                    db.add_match(match, stage, tournament["id"], league["id"])
 
 
 if __name__ == '__main__':

@@ -71,3 +71,30 @@ export const TeamSlugQuery = extendType({
 		})
 	}
 })
+
+export const SearchTeamsQuery = extendType({
+	type: 'Query',
+	definition(t) {
+		t.field('searchTeams', {
+			type: list('Team'),
+			args: {
+				search: stringArg()
+			},
+			resolve: (_root, { search }, ctx) => {
+				if (!search)
+					return [];
+				return ctx.db.teams.findMany({
+					where: {
+						name: {
+							contains: search,
+							mode: 'insensitive',
+						}
+					},
+					include: {
+						current_players: true
+					}
+				})
+			}
+		})
+	}
+})

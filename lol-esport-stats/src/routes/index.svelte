@@ -1,6 +1,6 @@
 <script>
     import TopBar from '../components/TopBar.svelte'
-    import Search from '../components/Search.svelte'
+    import Search from '../components/search/Search.svelte'
     import { ApolloClient, InMemoryCache } from '@apollo/client/core';
     import { setClient } from "svelte-apollo";
 
@@ -10,10 +10,23 @@
 	});
     setClient(client);
 </script>
-<Search />
-<TopBar />
-<h1>Welcome to SvelteKit</h1>
-<p>Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation</p>
-<p>coucou</p>
 
-<style></style>
+<div class="search-bar">
+    <Search />
+</div>
+
+<style>
+    @import url('https://fonts.googleapis.com/css?family=Roboto&display=swap');
+    :global(body) {
+        font-family: 'Roboto', Arial, Helvetica, sans-serif;
+    }
+
+    .search-bar {
+        margin-left: auto;
+        margin-right: auto;
+        width: 80%;
+        padding: .5rem 2rem;
+        border-radius: 5px;
+        box-shadow: 0rem 0rem .25rem #b0bec5;
+    }
+</style>

@@ -21,4 +21,14 @@ const SEARCH_LEAGUES = gql`
     }
 `;
 
-export { GET_ALL_LEAGUES, SEARCH_LEAGUES };
+const SEARCH_TEAMS = gql`
+    query SearchTeams($search: String) {
+        searchTeams(search: $search) {
+            id
+            name
+        }
+    }
+`;
+
+
+export { GET_ALL_LEAGUES, SEARCH_LEAGUES, SEARCH_TEAMS };

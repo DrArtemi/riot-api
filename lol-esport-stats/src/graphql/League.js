@@ -78,13 +78,8 @@ export const SearchLeaguesQuery = extendType({
 				search: stringArg()
 			},
 			resolve: (_root, { search }, ctx) => {
-				console.log(search);
 				if (!search)
-					return ctx.db.leagues.findMany({
-						include: {
-							tournaments: true
-						}
-					});
+					return [];
 				return ctx.db.leagues.findMany({
 					where: {
 						name: {

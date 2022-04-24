@@ -134,6 +134,7 @@ class DBUtility:
             match_obj.state = match["state"]
             if match_final_state:
                 match_obj.final_state = json.dumps(match_final_state, separators=(',', ':'))
+                match_obj.date = dateparser.parse(match_final_state["timestamp"])
             if match_evolution:
                 match_obj.evolution = json.dumps(match_evolution, separators=(',', ':'))
             if exist_stage:
@@ -158,6 +159,8 @@ class DBUtility:
                     match_obj.team_2 = exist_team
                     match_obj.team_2_win = team["result"]["outcome"] == "win"
             
-            session.add(match_obj)
-            session.commit()
-            session.close()
+            # Ignore uncomplete matches for now
+            if match_obj.team_1 and match_obj.team_2:
+                session.add(match_obj)
+                session.commit()
+                session.close()

@@ -61,6 +61,7 @@ class Matches(Base):
 
     id = Column(Integer, primary_key=True)
     riot_id = Column('riot_id', String(50), unique=True)
+    date = Column('date', DateTime)
     state = Column('state', String(50))
     final_state = Column('final_state', String())
     evolution = Column('evolution', String())

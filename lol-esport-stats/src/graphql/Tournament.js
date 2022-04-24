@@ -2,7 +2,7 @@ import { nonNull, objectType, extendType, intArg, list, scalarType, stringArg } 
 import { Stage } from './Stage'
 import { League } from './League'
 
-const DateScalar = scalarType({
+export const DateScalar = scalarType({
 	name: 'Date',
 	asNexusMethod: 'date',
 	description: 'Date custom scalar type',

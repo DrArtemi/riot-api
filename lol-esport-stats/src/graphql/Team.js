@@ -1,6 +1,7 @@
 import { nonNull, objectType, extendType, intArg, list, enumType, stringArg } from 'nexus'
 import { Player } from './Player'
 import { League } from './League'
+import { Match } from './Match'
 
 export const Team = objectType({
 	name: 'Team',
@@ -17,8 +18,8 @@ export const Team = objectType({
         t.field('league', { type: League })
         t.list.nonNull.field('current_players', { type: Player })
         t.list.nonNull.field('players', { type: Player })
-        // t.list.nonNull.field('matches_team_1', { type: Match })
-        // t.list.nonNull.field('matches_team_2', { type: Match })
+        t.list.field('matches_team_1', { type: Match })
+        t.list.field('matches_team_2', { type: Match })
 	}
 })
 

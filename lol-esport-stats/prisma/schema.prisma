@@ -31,17 +31,20 @@ model leagues {
 }
 
 model matches {
-  id                             Int      @id @default(autoincrement())
-  riot_id                        String?  @unique @db.VarChar(50)
-  state                          String?  @db.VarChar(50)
+  id                             Int       @id @default(autoincrement())
+  riot_id                        String?   @unique @db.VarChar(50)
+  date                           DateTime? @db.Timestamp(6)
+  state                          String?   @db.VarChar(50)
+  final_state                    String?   @db.VarChar()
+  evolution                      String?   @db.VarChar()
   stage_id                       Int
   team_1_id                      Int?
   team_2_id                      Int?
   team_1_win                     Boolean?
   team_2_win                     Boolean?
-  stage                          stages   @relation(fields: [stage_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  team_1                         teams?   @relation("matches_team_1", fields: [team_1_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  team_2                         teams?   @relation("matches_team_2", fields: [team_2_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  stage                          stages    @relation(fields: [stage_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  team_1                         teams?    @relation("matches_team_1", fields: [team_1_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  team_2                         teams?    @relation("matches_team_2", fields: [team_2_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model players {

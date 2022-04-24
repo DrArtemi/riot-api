@@ -192,7 +192,6 @@ class RiotUnofficialApi:
             **game_metadata,
             "frames": final_state
         }
-        
         return self.parse_game(game)
     
     @staticmethod
@@ -268,7 +267,7 @@ class RiotUnofficialApi:
 
 def get_usable_date():
     mydate = datetime.datetime.now()
-    minute = datetime.timedelta(minutes=120)
+    minute = datetime.timedelta(minutes=180)
     mydate_final = (mydate - minute).strftime("%Y-%m-%dT%H:%M:%S")
     head = mydate_final[:-2]
     tail = round(int(mydate_final[-2:]), -1)

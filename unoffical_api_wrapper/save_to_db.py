@@ -19,10 +19,10 @@ def parse_arguments():
 def feed_database(api, db):
     # LEAGUES
     leagues = api.get_leagues()
-    for league in tqdm(leagues, desc="Leagues"):
+    for league in leagues:
         db.add_league(league)
     teams = api.get_teams()
-    for team in tqdm(teams, desc="Teams"):
+    for team in teams:
         # (tdb = invalid)
         if team["status"] == "archived" or team["slug"] == 'tbd':
             continue
@@ -31,7 +31,7 @@ def feed_database(api, db):
         db.add_team(team)
         
         # Add players
-        for player in tqdm(players, desc="Players"):
+        for player in players:
             db.add_player(player, team["id"])
 
     # TOURNAMENTS
@@ -39,7 +39,7 @@ def feed_database(api, db):
         tournaments = api.get_tournaments(league["id"])
                 
         # STAGES
-        for tournament in tqdm(tournaments, desc="Tournaments"):
+        for tournament in tournaments:
             standings = api.get_standings(tournament["id"])
             stages = standings[0]["stages"]
             
@@ -51,7 +51,7 @@ def feed_database(api, db):
             db.add_tournament(tournament, league["id"])
             
             # Add stages
-            for stage in tqdm(stages, desc="Stages"):
+            for stage in stages:
                 sections = stage.pop("sections", [])
                 db.add_stage(stage, tournament["id"])
                 
@@ -62,10 +62,10 @@ def feed_database(api, db):
                         match["section"] = section["name"]
                         matches.append(match.copy())
                 
-                for match in tqdm(matches, desc="Matches"):
-                    # match_final_state = api.get_match_details(match["id"])
+                for match in matches:
+                    match_final_state = api.get_match_details(match["id"])
                     # match_evolution = api.get_match_evolution(match["id"], freq=60)
-                    db.add_match(match, stage, tournament["id"], league["id"])
+                    db.add_match(match, stage, tournament["id"], league["id"], match_final_state=match_final_state)
 
 
 if __name__ == '__main__':

@@ -1,14 +1,5 @@
 <script>
-    import TopBar from '../components/TopBar.svelte'
     import Search from '../components/search/Search.svelte'
-    import { ApolloClient, InMemoryCache } from '@apollo/client/core';
-    import { setClient } from "svelte-apollo";
-
-    const client = new ApolloClient({
-		uri: "http://localhost:3000/graphql",
-		cache: new InMemoryCache()
-	});
-    setClient(client);
 </script>
 
 <div class="search-bar">

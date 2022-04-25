@@ -43,15 +43,15 @@ const LEAGUE_MATCHES = gql`
             team_1 {
                 id
                 name
+                image
             }
             team_2 {
                 id
                 name
+                image
             }
         }
     }
 `;
-
-
 
 export { GET_ALL_LEAGUES, SEARCH_LEAGUES, SEARCH_TEAMS, LEAGUE_MATCHES };

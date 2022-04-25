@@ -10,3 +10,10 @@
 </script>
 
 <slot></slot>
+
+<style>
+    @import url('https://fonts.googleapis.com/css?family=Roboto&display=swap');
+    :global(body) {
+        font-family: 'Roboto', Arial, Helvetica, sans-serif;
+    }
+</style>

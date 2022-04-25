@@ -8,7 +8,7 @@
 <span class="category-name">{name}</span>
 <ul class="search-category">
     {#each data as el (el.id)}
-        <SearchItem name={el.name} link="/{name.toLowerCase()}?slug={el.slug}"/>
+        <SearchItem name={el.name} link="/?category={name.toLowerCase()}&slug={el.slug}"/>
     {/each}
 </ul>
 

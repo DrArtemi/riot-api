@@ -31,7 +31,7 @@
     }    
 </script>
 
-<div class="search-bar">
+<div class="absolute left-8 w-11/12 top-8 mx-auto border-l-2 border-l-amber-400">
     <Search
         bind:search_input={search_input}
         leagues={leagues}
@@ -39,32 +39,11 @@
     />
 </div>
 
-{#if category}
-<div class="content">
-{#if matches}
-    <League slug={slug} matches={matches}/>
-{/if}
+{#if category && slug}
+<div class="mt-32 px-8">
+    <h1 class="text-4xl mb-8 capitalize text-slate-400">{slug}</h1>
+    {#if matches}
+        <League matches={matches}/>
+    {/if}
 </div>
 {/if}
-
-<style>
-    .search-bar {
-        margin-left: auto;
-        margin-right: auto;
-        margin-top: 2rem;
-        width: 80%;
-        padding: .5rem 2rem;
-        border-radius: 5px;
-        box-shadow: 0rem 0rem .25rem #b0bec5;
-    }
-
-    .content {
-        margin-left: auto;
-        margin-right: auto;
-        margin-top: 2rem;
-        width: 80%;
-        padding: .5rem 2rem;
-        border-radius: 5px;
-        box-shadow: 0rem 0rem .25rem #b0bec5;
-    }
-</style>

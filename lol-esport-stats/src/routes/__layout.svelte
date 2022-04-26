@@ -1,4 +1,5 @@
 <script>
+    import "../app.css";
     import { ApolloClient, InMemoryCache } from '@apollo/client/core';
     import { setClient } from "svelte-apollo";
 
@@ -9,7 +10,7 @@
     setClient(client);
 </script>
 
-<slot></slot>
+<slot />
 
 <style>
     @import url('https://fonts.googleapis.com/css?family=Roboto&display=swap');

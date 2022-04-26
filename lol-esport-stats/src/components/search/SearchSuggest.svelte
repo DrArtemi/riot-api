@@ -5,13 +5,10 @@
 </script>
 
 
+<div class="border-t-2 border-t-slate-600">
 {#each search_data as { category, data }, i}
     {#if data.length > 0}
-        <div class="search-category">
-            <SearchCategory name={category} data={data}/>
-        </div>
+        <SearchCategory name={category} data={data}/>
     {/if}
 {/each}
-
-<style>
-</style>
+</div>

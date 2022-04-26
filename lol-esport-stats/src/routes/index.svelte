@@ -2,20 +2,50 @@
     import Search from '../components/search/Search.svelte'
     import League from '../components/League.svelte';
     import { page } from '$app/stores'
+    import { query } from 'svelte-apollo';
+    import { SEARCH_LEAGUES, SEARCH_TEAMS, LEAGUE_MATCHES } from '../components/queries';
 
     const category = $page.query.get('category');
     const slug = $page.query.get('slug');
+
+    let matches;
+
+    let search_input = "";
+    // Search leagues
+    const leagues = query(SEARCH_LEAGUES, {
+        variables: { "search": search_input }
+    });
+    $: leagues.refetch({ "search": search_input });
+    // Search teams
+    const teams = query(SEARCH_TEAMS, {
+        variables: { "search": search_input }
+    });
+    $: teams.refetch({ "search": search_input });
+
+    $: if (category) {
+        if (category == "leagues") {
+            matches = query(LEAGUE_MATCHES, {
+                variables: { "league": slug }
+            });
+        }
+    }    
 </script>
 
 <div class="search-bar">
-    <Search />
+    <Search
+        bind:search_input={search_input}
+        leagues={leagues}
+        teams={teams}
+    />
 </div>
 
+{#if category}
 <div class="content">
-{#if category == "leagues" && slug}
-    <League slug={slug}/>
+{#if matches}
+    <League slug={slug} matches={matches}/>
 {/if}
 </div>
+{/if}
 
 <style>
     .search-bar {

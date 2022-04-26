@@ -5,19 +5,9 @@
     export let data;
 </script>
 
-<span class="category-name">{name}</span>
-<ul class="search-category">
+<h3 class="px-4 mt-4 mb-2 text-xl text-slate-400">{name}</h3>
+<ul>
     {#each data as el (el.id)}
         <SearchItem name={el.name} link="/?category={name.toLowerCase()}&slug={el.slug}"/>
     {/each}
 </ul>
-
-<style>
-    .category-name {
-        color: #455a64;
-    }
-
-    .search-category {
-        padding-left: 0;
-    }
-</style>

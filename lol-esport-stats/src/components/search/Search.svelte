@@ -1,19 +1,9 @@
 <script>
-    import { query } from 'svelte-apollo';
-    import { SEARCH_LEAGUES, SEARCH_TEAMS } from '../queries';
     import SearchSuggest from './SearchSuggest.svelte';
     
-    let search_input = "";
-    // Search leagues
-    const leagues = query(SEARCH_LEAGUES, {
-        variables: { "search": search_input }
-    });
-    $: leagues.refetch({ "search": search_input });
-    // Search teams
-    const teams = query(SEARCH_TEAMS, {
-        variables: { "search": search_input }
-    });
-    $: teams.refetch({ "search": search_input });
+    export let search_input = "";
+    export let leagues;
+    export let teams;
 </script>
 
 <input class="search-input "type="text" bind:value={search_input} placeholder="Player, Team, Tournament..." />

@@ -1,14 +1,8 @@
 <script>
-    import { page } from '$app/stores'
     import MatchList from '../components/MatchList.svelte';
-    import { query } from 'svelte-apollo';
-    import { LEAGUE_MATCHES } from '../components/queries';
 
     export let slug;
-
-    const matches = query(LEAGUE_MATCHES, {
-        variables: { "league": slug }
-    });
+    export let matches;
 </script>
 
 <h1 class="title">{slug} matches</h1>

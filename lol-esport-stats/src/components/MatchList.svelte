@@ -7,10 +7,10 @@
 <table class="text-left border-collapse w-full">
     <thead>
         <tr>
-            <th class="sticky z-10 top-0 p-0 bg-slate-900 text-slate-300"><div class="py-2 pr-2 border-b border-amber-400/50">Date</div></th>
-            <th class="sticky z-10 top-0 p-0 bg-slate-900 text-center text-slate-300"><div class="py-2 pr-2 border-b border-amber-400/50">Blue side</div></th>
-            <th class="sticky z-10 top-0 p-0 bg-slate-900 text-center text-slate-300"><div class="py-2 pr-2 border-b border-amber-400/50">Red side</div></th>
-            <th class="sticky z-10 top-0 p-0 bg-slate-900 text-center text-slate-300"><div class="py-2 pr-2 border-b border-amber-400/50">Link</div></th>
+            <th class="sticky z-10 top-0 p-0 bg-slate-900 text-slate-300"><div class="py-2 pr-2 border-b border-amber-400/40">Date</div></th>
+            <th class="sticky z-10 top-0 p-0 bg-slate-900 text-center text-slate-300"><div class="py-2 pr-2 border-b border-amber-400/40">Blue side</div></th>
+            <th class="sticky z-10 top-0 p-0 bg-slate-900 text-center text-slate-300"><div class="py-2 pr-2 border-b border-amber-400/40">Red side</div></th>
+            <th class="sticky z-10 top-0 p-0 bg-slate-900 text-center text-slate-300"><div class="py-2 pr-2 border-b border-amber-400/40">Link</div></th>
         </tr>
     </thead>
     <tbody>
@@ -28,3 +28,4 @@
         {/each}
     </tbody>
 </table>
+<div class="sticky bottom-0 h-px -mt-px bg-amber-400/40"></div>

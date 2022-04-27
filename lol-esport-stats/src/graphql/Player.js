@@ -66,3 +66,30 @@ export const PlayerNameQuery = extendType({
 		})
 	}
 })
+
+export const SearchPlayersQuery = extendType({
+	type: 'Query',
+	definition(t) {
+		t.field('searchPlayers', {
+			type: list('Player'),
+			args: {
+				search: stringArg()
+			},
+			resolve: (_root, { search }, ctx) => {
+				if (!search)
+					return [];
+				return ctx.db.players.findMany({
+					where: {
+						summoner_name: {
+							contains: search,
+							mode: 'insensitive',
+						}
+					},
+					include: {
+						current_team: true
+					}
+				})
+			}
+		})
+	}
+})

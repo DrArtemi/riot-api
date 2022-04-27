@@ -63,8 +63,8 @@ export const TeamSlugQuery = extendType({
 			args: {
 				slug: nonNull(stringArg())
 			},
-			resolve: (_root, { slug }, ctx) => ctx.db.teams.findUnique({
-				where: { slug },
+			resolve: (_root, { slug }, ctx) => ctx.db.teams.findMany({
+				where: { slug: { equals: slug } },
 				include: {
 					current_players: true
 				}

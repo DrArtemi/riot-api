@@ -32,6 +32,16 @@ const SEARCH_TEAMS = gql`
     }
 `;
 
+const SEARCH_PLAYERS = gql`
+    query SearchPlayers($search: String) {
+        searchPlayers(search: $search) {
+            id
+            riot_id
+            summoner_name
+        }
+    }
+`;
+
 const LEAGUE_MATCHES = gql`
     query LeagueMatches($league: String!) {
         leagueMatches(league: $league) {
@@ -54,4 +64,48 @@ const LEAGUE_MATCHES = gql`
     }
 `;
 
-export { GET_ALL_LEAGUES, SEARCH_LEAGUES, SEARCH_TEAMS, LEAGUE_MATCHES };
+const TEAM_MATCHES = gql`
+    query TeamMatches($team: String!) {
+        teamMatches(team: $team) {
+            id
+            riot_id
+            date
+            team_1_win
+            team_2_win
+            team_1 {
+                id
+                name
+                image
+            }
+            team_2 {
+                id
+                name
+                image
+            }
+        }
+    }
+`;
+
+const PLAYER_MATCHES = gql`
+    query PlayerMatches($player: String!) {
+        playerMatches(player: $player) {
+            id
+            riot_id
+            date
+            team_1_win
+            team_2_win
+            team_1 {
+                id
+                name
+                image
+            }
+            team_2 {
+                id
+                name
+                image
+            }
+        }
+    }
+`;
+
+export { GET_ALL_LEAGUES, SEARCH_LEAGUES, SEARCH_TEAMS, SEARCH_PLAYERS, LEAGUE_MATCHES, TEAM_MATCHES, PLAYER_MATCHES };

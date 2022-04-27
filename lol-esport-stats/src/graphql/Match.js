@@ -98,3 +98,111 @@ export const LeagueMatchesQuery = extendType({
 		})
 	}
 })
+
+export const TeamMatchesQuery = extendType({
+	type: 'Query',
+	definition(t) {
+		t.field('teamMatches', {
+			type: list('Match'),
+			args: {
+				team: stringArg()
+			},
+			resolve: (_root, { team }, ctx) => {
+				if (!team)
+					return [];
+				return ctx.db.matches.findMany({
+                    orderBy: {
+                        date: 'desc',
+                    },
+					where: {
+						OR: [
+							{
+								team_1: {
+									slug: {
+										equals: team
+									}
+								}
+							},
+							{
+								team_2: {
+									slug: {
+										equals: team
+									}
+								}
+							}
+						],
+                        NOT: {
+                            date: null
+                        }
+					},
+                    include: {
+                        team_1: true,
+                        team_2: true
+                    }
+				})
+			}
+		})
+	}
+})
+
+export const PlayerMatchesQuery = extendType({
+	type: 'Query',
+	definition(t) {
+		t.field('playerMatches', {
+			type: list('Match'),
+			args: {
+				player: stringArg()
+			},
+			resolve: (_root, { player }, ctx) => {
+				if (!player)
+					return [];
+				return ctx.db.matches.findMany({
+                    orderBy: {
+                        date: 'desc',
+                    },
+					where: {
+						OR: [
+							{
+								team_1: {
+									current_players: {
+										some: {
+											riot_id: {
+												equals: player
+											}
+										}
+									}
+								}
+							},
+							{
+								team_2: {
+									current_players: {
+										some: {
+											riot_id: {
+												equals: player
+											}
+										}
+									}
+								}
+							}
+						],
+                        NOT: {
+                            date: null
+                        }
+					},
+                    include: {
+                        team_1: {
+							include: {
+								current_players: true,
+							}
+						},
+                        team_2: {
+							include: {
+								current_players: true,
+							}
+						},
+                    }
+				})
+			}
+		})
+	}
+})

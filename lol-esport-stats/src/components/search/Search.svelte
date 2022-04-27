@@ -4,6 +4,7 @@
     export let search_input = "";
     export let leagues;
     export let teams;
+    export let players;
 </script>
 
 <input class="w-full bg-slate-900 hover:bg-slate-700 rounded-r-md bg-inherit outline-none border-none px-4 py-1 text-xl text-slate-200" type="text" bind:value={search_input} placeholder="League, team, player..." />
@@ -12,7 +13,8 @@
     <SearchSuggest
         search_data={[
             { category: "Leagues", data: $leagues.data ? $leagues.data.searchLeagues : [] },
-            { category: "Teams", data: $teams.data ? $teams.data.searchTeams : [] }
+            { category: "Teams", data: $teams.data ? $teams.data.searchTeams : [] },
+            { category: "Players", data: $players.data ? $players.data.searchPlayers : [] }
         ]}
     />
 </div>

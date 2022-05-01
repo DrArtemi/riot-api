@@ -1,26 +1,26 @@
-import { nonNull, objectType, extendType, intArg, list, stringArg } from 'nexus'
-import { Stage } from './Stage'
-import { Team } from './Team'
-import { DateScalar } from './Tournament'
+import { nonNull, objectType, extendType, intArg, list, stringArg } from 'nexus';
+import { Stage } from './Stage';
+import { Team } from './Team';
+import { DateScalar } from './Tournament';
 
 export const Match = objectType({
 	name: 'Match',
 	definition(t) {
-		t.nonNull.id('id', { description: 'The match unique ID' })
-        t.nonNull.string('riot_id')
-        t.field('date', { type: DateScalar })
-		t.nonNull.string('state')
-		t.string('final_state')
-		t.string('evolution')
-        t.nonNull.boolean('team_1_id')
-        t.nonNull.boolean('team_2_id')
-        t.nonNull.boolean('team_1_win')
-        t.nonNull.boolean('team_2_win')
-        t.field('team_1', { type: Team })
-        t.field('team_2', { type: Team })
-		t.field('stage', { type: Stage })
+		t.nonNull.id('id', { description: 'The match unique ID' });
+		t.nonNull.string('riot_id');
+		t.field('date', { type: DateScalar });
+		t.nonNull.string('state');
+		t.string('final_state');
+		t.string('evolution');
+		t.nonNull.boolean('team_1_id');
+		t.nonNull.boolean('team_2_id');
+		t.nonNull.boolean('team_1_win');
+		t.nonNull.boolean('team_2_win');
+		t.field('team_1', { type: Team });
+		t.field('team_2', { type: Team });
+		t.field('stage', { type: Stage });
 	}
-})
+});
 
 export const MatchQuery = extendType({
 	type: 'Query',
@@ -30,12 +30,13 @@ export const MatchQuery = extendType({
 			args: {
 				id: nonNull(intArg())
 			},
-			resolve: (_root, { id }, ctx) => ctx.db.matches.findUnique({
-				where: { id }
-			})
-		})
+			resolve: (_root, { id }, ctx) =>
+				ctx.db.matches.findUnique({
+					where: { id }
+				})
+		});
 	}
-})
+});
 
 export const MatchesQuery = extendType({
 	type: 'Query',
@@ -43,9 +44,9 @@ export const MatchesQuery = extendType({
 		t.field('allMatchs', {
 			type: list('Match'),
 			resolve: (_root, _, ctx) => ctx.db.matches.findMany()
-		})
+		});
 	}
-})
+});
 
 export const MatchByRiotIdQuery = extendType({
 	type: 'Query',
@@ -55,12 +56,13 @@ export const MatchByRiotIdQuery = extendType({
 			args: {
 				riot_id: nonNull(stringArg())
 			},
-			resolve: (_root, { riot_id }, ctx) => ctx.db.leagues.findFirst({
-				where: { riot_id }
-			})
-		})
+			resolve: (_root, { riot_id }, ctx) =>
+				ctx.db.leagues.findFirst({
+					where: { riot_id }
+				})
+		});
 	}
-})
+});
 
 export const LeagueMatchesQuery = extendType({
 	type: 'Query',
@@ -71,40 +73,39 @@ export const LeagueMatchesQuery = extendType({
 				league: stringArg()
 			},
 			resolve: (_root, { league }, ctx) => {
-				if (!league)
-					return [];
+				if (!league) return [];
 				return ctx.db.matches.findMany({
-                    orderBy: {
-                        date: 'desc',
-                    },
+					orderBy: {
+						date: 'desc'
+					},
 					where: {
 						stage: {
-                            tournament: {
-                                league: {
-                                    slug: {
-                                        equals: league
-                                    }
-                                }
-                            }
+							tournament: {
+								league: {
+									slug: {
+										equals: league
+									}
+								}
+							}
 						},
-                        NOT: {
-                            date: null
-                        }
+						NOT: {
+							date: null
+						}
 					},
-                    include: {
-                        team_1: true,
-                        team_2: true,
+					include: {
+						team_1: true,
+						team_2: true,
 						stage: {
 							include: {
 								tournament: true
 							}
 						}
-                    }
-				})
+					}
+				});
 			}
-		})
+		});
 	}
-})
+});
 
 export const TeamMatchesQuery = extendType({
 	type: 'Query',
@@ -115,12 +116,11 @@ export const TeamMatchesQuery = extendType({
 				team: stringArg()
 			},
 			resolve: (_root, { team }, ctx) => {
-				if (!team)
-					return [];
+				if (!team) return [];
 				return ctx.db.matches.findMany({
-                    orderBy: {
-                        date: 'desc',
-                    },
+					orderBy: {
+						date: 'desc'
+					},
 					where: {
 						OR: [
 							{
@@ -138,24 +138,24 @@ export const TeamMatchesQuery = extendType({
 								}
 							}
 						],
-                        NOT: {
-                            date: null
-                        }
+						NOT: {
+							date: null
+						}
 					},
-                    include: {
-                        team_1: true,
-                        team_2: true,
+					include: {
+						team_1: true,
+						team_2: true,
 						stage: {
 							include: {
 								tournament: true
 							}
 						}
-                    }
-				})
+					}
+				});
 			}
-		})
+		});
 	}
-})
+});
 
 export const PlayerMatchesQuery = extendType({
 	type: 'Query',
@@ -166,12 +166,11 @@ export const PlayerMatchesQuery = extendType({
 				player: stringArg()
 			},
 			resolve: (_root, { player }, ctx) => {
-				if (!player)
-					return [];
+				if (!player) return [];
 				return ctx.db.matches.findMany({
-                    orderBy: {
-                        date: 'desc',
-                    },
+					orderBy: {
+						date: 'desc'
+					},
 					where: {
 						OR: [
 							{
@@ -197,19 +196,19 @@ export const PlayerMatchesQuery = extendType({
 								}
 							}
 						],
-                        NOT: {
-                            date: null
-                        }
+						NOT: {
+							date: null
+						}
 					},
-                    include: {
-                        team_1: {
+					include: {
+						team_1: {
 							include: {
-								current_players: true,
+								current_players: true
 							}
 						},
-                        team_2: {
+						team_2: {
 							include: {
-								current_players: true,
+								current_players: true
 							}
 						},
 						stage: {
@@ -217,9 +216,9 @@ export const PlayerMatchesQuery = extendType({
 								tournament: true
 							}
 						}
-                    }
-				})
+					}
+				});
 			}
-		})
+		});
 	}
-})
+});

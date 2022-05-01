@@ -10,7 +10,7 @@ def parse_arguments():
     
     parser.add_argument("--user", type=str, help="Postgresql username", required=True)
     parser.add_argument("--password", type=str, help="Postgresql password", required=True)
-    parser.add_argument("--database", type=str, help="Postgresql databse", default="riot_stats")
+    parser.add_argument("--database", type=str, help="Postgresql database", default="riot_stats")
     parser.add_argument("--api-key", type=str, help="Riot unofficial api key", required=True)
     
     return parser.parse_args()

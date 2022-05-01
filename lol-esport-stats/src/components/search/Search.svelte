@@ -17,9 +17,9 @@
 	<div class="bg-slate-800 rounded-br-md">
 		<SearchSuggest
 			search_data={[
-				{ category: 'Leagues', data: $leagues.data ? $leagues.data.searchLeagues : [] },
-				{ category: 'Teams', data: $teams.data ? $teams.data.searchTeams : [] },
-				{ category: 'Players', data: $players.data ? $players.data.searchPlayers : [] }
+				{ category: 'Leagues', data: leagues },
+				{ category: 'Teams', data: teams },
+				{ category: 'Players', data: players }
 			]}
 		/>
 	</div>

@@ -11,33 +11,71 @@ const GET_ALL_LEAGUES = gql`
 	}
 `;
 
+const LEAGUE_FRAGMENT = gql`
+	fragment LeagueFragment on League {
+		id
+		slug
+		name
+		region
+	}
+`;
+
+const TEAM_FRAGMENT = gql`
+	fragment TeamFragment on Team {
+		id
+		slug
+		name
+	}
+`;
+
+const PLAYER_FRAGMENT = gql`
+	fragment PlayerFragment on Player {
+		id
+		riot_id
+		summoner_name
+	}
+`;
+
 const SEARCH_LEAGUES = gql`
+	${LEAGUE_FRAGMENT}
 	query SearchLeagues($search: String) {
 		searchLeagues(search: $search) {
-			id
-			slug
-			name
-			region
+			...LeagueFragment
 		}
 	}
 `;
 
 const SEARCH_TEAMS = gql`
+	${TEAM_FRAGMENT}
 	query SearchTeams($search: String) {
 		searchTeams(search: $search) {
-			id
-			slug
-			name
+			...TeamFragment
 		}
 	}
 `;
 
 const SEARCH_PLAYERS = gql`
+	${PLAYER_FRAGMENT}
 	query SearchPlayers($search: String) {
 		searchPlayers(search: $search) {
-			id
-			riot_id
-			summoner_name
+			...PlayerFragment
+		}
+	}
+`;
+
+export const SEARCH_ALL = gql`
+	${LEAGUE_FRAGMENT}
+	${TEAM_FRAGMENT}
+	${PLAYER_FRAGMENT}
+	query SearchAll($search: String) {
+		searchLeagues(search: $search) {
+			...LeagueFragment
+		}
+		searchTeams(search: $search) {
+			...TeamFragment
+		}
+		searchPlayers(search: $search) {
+			...PlayerFragment
 		}
 	}
 `;

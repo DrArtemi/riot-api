@@ -1,4 +1,5 @@
 import { nonNull, objectType, extendType, intArg, list, stringArg } from 'nexus'
+import { Stage } from './Stage'
 import { Team } from './Team'
 import { DateScalar } from './Tournament'
 
@@ -17,6 +18,7 @@ export const Match = objectType({
         t.nonNull.boolean('team_2_win')
         t.field('team_1', { type: Team })
         t.field('team_2', { type: Team })
+		t.field('stage', { type: Stage })
 	}
 })
 
@@ -91,7 +93,12 @@ export const LeagueMatchesQuery = extendType({
 					},
                     include: {
                         team_1: true,
-                        team_2: true
+                        team_2: true,
+						stage: {
+							include: {
+								tournament: true
+							}
+						}
                     }
 				})
 			}

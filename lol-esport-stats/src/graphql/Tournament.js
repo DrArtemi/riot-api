@@ -82,3 +82,23 @@ export const TournamentSlugQuery = extendType({
 		})
 	}
 })
+
+export const TournamentsSlugsQuery = extendType({
+	type: 'Query',
+	definition(t) {
+		t.field('tournamentsBySlugs', {
+			type: list('Tournament'),
+			args: {
+				slugs: nonNull(list(stringArg()))
+			},
+			resolve: (_root, { slugs }, ctx) => ctx.db.tournaments.findMany({
+				where: {
+					slug: { in: slugs }
+				},
+				include: {
+					stages: true
+				}
+			})
+		})
+	}
+})

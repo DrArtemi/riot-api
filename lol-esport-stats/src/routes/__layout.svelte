@@ -12,35 +12,37 @@
     });
     setClient(client);
 
-    let search_input = "";
+    let searchInput = "";
+
     // Search leagues
     const leagues = query(SEARCH_LEAGUES, {
-        variables: { "search": search_input }
+        variables: { "search": searchInput }
     });
-    $: leagues.refetch({ "search": search_input });
+    $: leagues.refetch({ "search": searchInput });
     // Search teams
     const teams = query(SEARCH_TEAMS, {
-        variables: { "search": search_input }
+        variables: { "search": searchInput }
     });
-    $: teams.refetch({ "search": search_input });
+    $: teams.refetch({ "search": searchInput });
     // Search players
     const players = query(SEARCH_PLAYERS, {
-        variables: { "search": search_input }
+        variables: { "search": searchInput }
     });
-    $: players.refetch({ "search": search_input });
-
+    $: players.refetch({ "search": searchInput });
 </script>
 
 <div class="absolute left-8 w-11/12 top-8 mx-auto border-l-2 border-l-amber-400">
     <Search
-        bind:search_input={search_input}
+        bind:searchInput={searchInput}
         leagues={leagues}
         teams={teams}
         players={players}
     />
 </div>
 
-<slot />
+<div class="flex h-full">
+    <slot />
+</div>
 
 <style>
     @import url('https://fonts.googleapis.com/css?family=Roboto&display=swap');

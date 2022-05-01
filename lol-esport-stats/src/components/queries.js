@@ -50,6 +50,13 @@ const LEAGUE_MATCHES = gql`
             date
             team_1_win
             team_2_win
+            stage {
+                id
+                name
+                tournament {
+                    slug
+                }
+            }
             team_1 {
                 id
                 name
@@ -108,4 +115,17 @@ const PLAYER_MATCHES = gql`
     }
 `;
 
-export { GET_ALL_LEAGUES, SEARCH_LEAGUES, SEARCH_TEAMS, SEARCH_PLAYERS, LEAGUE_MATCHES, TEAM_MATCHES, PLAYER_MATCHES };
+const TOURNAMENTS_BY_SLUGS = gql`
+    query TournamentsBySlugs($slugs: [String]!){
+        tournamentsBySlugs(slugs: $slugs) {
+            id
+            slug
+            stages {
+                id
+                name
+            }
+        }
+    }
+`;
+
+export { GET_ALL_LEAGUES, SEARCH_LEAGUES, SEARCH_TEAMS, SEARCH_PLAYERS, LEAGUE_MATCHES, TEAM_MATCHES, PLAYER_MATCHES, TOURNAMENTS_BY_SLUGS };

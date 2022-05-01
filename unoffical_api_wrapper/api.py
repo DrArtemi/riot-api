@@ -1,4 +1,4 @@
-from typing import final
+import pandas as pd
 import requests
 import datetime
 
@@ -277,8 +277,38 @@ def get_usable_date():
     return head + str(sec) + 'Z'
 
 
+def flatten_data(data, parent_key):
+    if isinstance(data, dict):
+        results = list()
+        for key in data:
+            results.append(flatten_data(data[key], "/".join([parent_key, str(key)])))
+        return results
+    return {parent_key: data}
+
+
+def flatten_list(data):
+    if isinstance(data, list):
+        if len(data) == 0:
+            return []
+        first, rest = data[0], data[1:]
+        return flatten_list(first) + flatten_list(rest)
+    else:
+        return [data]
+    
+
+def create_dataframe(data):
+    list_data = flatten_data(data, "df")
+    flat_data = flatten_list(list_data)
+    final_data = { k: v for d in flat_data for k, v in d.items() }
+    return final_data
+    df = pd.DataFrame(final_data)
+    return df
+    df.to_csv("./example.csv")
+
+
 if __name__ == '__main__':
     import pandas as pd
+    
     
     api = RiotUnofficialApi(
         api_key="0TvQnueqKa5mxJntVWt0w4LpLfEkrV1Ta8rQBb9Z",
@@ -286,5 +316,12 @@ if __name__ == '__main__':
     )
     
     # print(api.get_match_details("105568157422015211"))
-
-    print(api.get_match_evolution("105568157422015211"))
+    final_result = dict(
+        details=api.get_match_details("107418445248279889"),
+        evolution=api.get_match_evolution("107418445248279889", freq=120)
+    )
+    # res = api.get_match_details("107418445248279889")
+    # res = api.get_match_evolution("107418445248279889", freq=120)
+    # final_result["match_data"] = create_dataframe(res)
+    
+    

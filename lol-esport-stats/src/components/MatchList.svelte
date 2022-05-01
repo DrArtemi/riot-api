@@ -19,8 +19,6 @@
     </thead>
     <tbody>
         {#each matches as match (match.id)}
-        <!-- <p>{match.stage.tournament.slug} {tournaments_filters}</p>
-        <p>{match.stage.id} {stages_filters}</p> -->
         {#if tournaments_filters.includes(match.stage.tournament.slug) && stages_filters.includes(match.stage.id)}
         <tr>
             <td class="w-1 whitespace-nowrap text-slate-200 capitalize py-2 pl-4 pr-4 border-t border-slate-400/10">{match.stage.tournament.slug.replaceAll('_', ' ')}</td>

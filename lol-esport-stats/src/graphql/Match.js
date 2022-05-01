@@ -144,7 +144,12 @@ export const TeamMatchesQuery = extendType({
 					},
                     include: {
                         team_1: true,
-                        team_2: true
+                        team_2: true,
+						stage: {
+							include: {
+								tournament: true
+							}
+						}
                     }
 				})
 			}
@@ -207,6 +212,11 @@ export const PlayerMatchesQuery = extendType({
 								current_players: true,
 							}
 						},
+						stage: {
+							include: {
+								tournament: true
+							}
+						}
                     }
 				})
 			}

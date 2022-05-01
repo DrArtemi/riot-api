@@ -31,7 +31,7 @@
     $: players.refetch({ "search": searchInput });
 </script>
 
-<div class="absolute left-8 w-11/12 top-8 mx-auto border-l-2 border-l-amber-400">
+<div class="absolute left-4 w-11/12 top-8 mx-auto border-l-2 border-l-amber-400">
     <Search
         bind:searchInput={searchInput}
         leagues={leagues}

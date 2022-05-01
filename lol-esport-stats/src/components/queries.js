@@ -79,6 +79,13 @@ const TEAM_MATCHES = gql`
             date
             team_1_win
             team_2_win
+            stage {
+                id
+                name
+                tournament {
+                    slug
+                }
+            }
             team_1 {
                 id
                 name
@@ -101,6 +108,13 @@ const PLAYER_MATCHES = gql`
             date
             team_1_win
             team_2_win
+            stage {
+                id
+                name
+                tournament {
+                    slug
+                }
+            }
             team_1 {
                 id
                 name

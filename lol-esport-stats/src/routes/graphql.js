@@ -1,13 +1,13 @@
-import { ApolloServer } from 'apollo-server-lambda'
-import { ApolloServerPluginLandingPageGraphQLPlayground } from 'apollo-server-core'
-import { makeSchema } from 'nexus'
-import { PrismaClient } from '../utils/prisma'
-import * as types from '../graphql'
+import { ApolloServer } from 'apollo-server-lambda';
+import { ApolloServerPluginLandingPageGraphQLPlayground } from 'apollo-server-core';
+import { makeSchema } from 'nexus';
+import { PrismaClient } from '../utils/prisma';
+import * as types from '../graphql';
 
 const schema = makeSchema({
 	types,
 	outputs: false
-})
+});
 
 /**
  * @type {import('apollo-server-lambda').ApolloServer}
@@ -21,9 +21,9 @@ const server = new ApolloServer({
 	introspection: true,
 	tracing: true,
 	plugins: [ApolloServerPluginLandingPageGraphQLPlayground()]
-})
+});
 
-const gqlHandler = server.createHandler()
+const gqlHandler = server.createHandler();
 
 /**
  * @type {import('@sveltejs/kit').RequestHandler}
@@ -40,16 +40,16 @@ const handler = async ({ method: httpMethod, headers, path, rawBody: body }) =>
 		{},
 		(err, { statusCode: status, body, headers }) => {
 			if (err) {
-				return Promise.reject(err)
+				return Promise.reject(err);
 			} else {
 				return Promise.resolve({
 					status,
 					body,
 					headers
-				})
+				});
 			}
 		}
-	)
+	);
 
-export const get = handler
-export const post = handler
+export const get = handler;
+export const post = handler;

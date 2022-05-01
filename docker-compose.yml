@@ -1,0 +1,28 @@
+version: '3.8'
+
+x-defaults: &defaults
+  restart: 'no'
+  environment: &environment
+    TZ: Europe/Paris
+
+services:
+  db:
+    <<: *defaults
+    image: postgres:14
+    environment:
+      <<: *environment
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: riot_stats
+    ports:
+      - 5432:5432
+    volumes:
+      - db:/var/lib/postgresql/data
+
+volumes:
+  db:
+    driver: local
+    driver_opts: &volume_conf
+      type: none
+      o: bind
+      device: ${DOCKER_DB_PATH}

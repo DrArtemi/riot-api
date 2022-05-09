@@ -27,7 +27,7 @@ class GameData:
         result = leaguepedia.query(
             tables="Tournaments, ScoreboardGames, ScoreboardPlayers",
             join_on="ScoreboardPlayers.GameId = ScoreboardGames.GameId, ScoreboardPlayers.OverviewPage = Tournaments.OverviewPage", #, ScoreboardGames.OverviewPage = ",
-            fields="ScoreboardGames.GameId, ScoreboardGames.MatchId, ScoreboardGames.RiotPlatformGameId",
+            fields="ScoreboardGames.GameId, ScoreboardGames.MatchId, ScoreboardGames.RiotPlatformGameId, ScoreboardGames.Team1Players, ScoreboardGames.Team2Players",
             where=f"ScoreboardPlayers.Link = '{player.summonerName}' AND Tournaments.name = '{tournament.name}'", # AND 
         )
         return transmute_lp_games(result)

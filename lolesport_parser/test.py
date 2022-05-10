@@ -12,3 +12,8 @@ if __name__ == "__main__":
     tournaments = player_data.tournaments()
     games = player_data.tournament_games(tournament=tournaments[33])
     player_stats = player_data.stats_from_games(games)
+    # Remove non numerical columns
+    player_stats = player_stats.select_dtypes(['number'])
+    # Remove columns with NaNs
+    player_stats = player_stats.dropna(axis=1)
+    breakpoint()

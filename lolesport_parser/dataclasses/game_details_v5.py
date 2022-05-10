@@ -160,35 +160,35 @@ class Perks(BaseModel):
 
 class Participant(BaseModel):
     assists: int
-    baronKills: int
-    bountyLevel: int
-    challenges: Optional[Challenges]
-    champExperience: int
+    baronKills: Optional[int] = None
+    bountyLevel: Optional[int] = None
+    challenges: Optional[Challenges] = None
+    champExperience: Optional[int] = None
     champLevel: int
     championId: int
-    championName: str
-    championTransform: int
-    consumablesPurchased: int
-    damageDealtToBuildings: int
+    championName: Optional[str] = None
+    championTransform: Optional[int] = None
+    consumablesPurchased: Optional[int] = None
+    damageDealtToBuildings: Optional[int] = None
     damageDealtToObjectives: int
     damageDealtToTurrets: int
     damageSelfMitigated: int
     deaths: int
-    detectorWardsPlaced: int
+    detectorWardsPlaced: Optional[int] = None
     doubleKills: int
-    dragonKills: int
+    dragonKills: Optional[int] = None
     firstBloodAssist: bool
     firstBloodKill: bool
     firstTowerAssist: bool
     firstTowerKill: bool
-    gameEndedInEarlySurrender: bool
-    gameEndedInSurrender: bool
+    gameEndedInEarlySurrender: Optional[bool] = None
+    gameEndedInSurrender: Optional[bool] = None
     goldEarned: int
     goldSpent: int
-    individualPosition: str
+    individualPosition: Optional[str] = None
     inhibitorKills: int
-    inhibitorTakedowns: int
-    inhibitorsLost: int
+    inhibitorTakedowns: Optional[int] = None
+    inhibitorsLost: Optional[int] = None
     item0: int
     item1: int
     item2: int
@@ -196,7 +196,7 @@ class Participant(BaseModel):
     item4: int
     item5: int
     item6: int
-    itemsPurchased: int
+    itemsPurchased: Optional[int] = None
     killingSprees: int
     kills: int
     lane: str
@@ -208,56 +208,56 @@ class Participant(BaseModel):
     magicDamageDealtToChampions: int
     magicDamageTaken: int
     neutralMinionsKilled: int
-    nexusKills: int
-    nexusLost: int
-    nexusTakedowns: int
-    objectivesStolen: int
-    objectivesStolenAssists: int
+    nexusKills: Optional[int] = None
+    nexusLost: Optional[int] = None
+    nexusTakedowns: Optional[int] = None
+    objectivesStolen: Optional[int] = None
+    objectivesStolenAssists: Optional[int] = None
     participantId: int
     pentaKills: int
-    perks: Perks
+    perks: Optional[Perks] = None  # FIXME: Optional because idk how to transform v4 to v5 perks
     physicalDamageDealt: int
     physicalDamageDealtToChampions: int
     physicalDamageTaken: int
     profileIcon: int
     quadraKills: int
-    riotIdName: str
-    riotIdTagline: str
+    riotIdName: Optional[str] = None
+    riotIdTagline: Optional[str] = None
     role: str
     sightWardsBoughtInGame: int
-    spell1Casts: int
+    spell1Casts: Optional[int] = None
     spell1Id: int
-    spell2Casts: int
+    spell2Casts: Optional[int] = None
     spell2Id: int
-    spell3Casts: int
-    spell4Casts: int
-    summoner1Casts: int
-    summoner2Casts: int
-    summonerId: int
-    summonerLevel: int
+    spell3Casts: Optional[int] = None
+    spell4Casts: Optional[int] = None
+    summoner1Casts: Optional[int] = None
+    summoner2Casts: Optional[int] = None
+    summonerId: Optional[int] = None
+    summonerLevel: Optional[int] = None
     summonerName: str
-    teamEarlySurrendered: bool
+    teamEarlySurrendered: Optional[bool] = None
     teamId: int
-    teamPosition: str
+    teamPosition: Optional[str] = None
     timeCCingOthers: int
-    timePlayed: int
+    timePlayed: Optional[int] = None
     totalDamageDealt: int
     totalDamageDealtToChampions: int
-    totalDamageShieldedOnTeammates: int
+    totalDamageShieldedOnTeammates: Optional[int] = None
     totalDamageTaken: int
     totalHeal: int
-    totalHealsOnTeammates: int
+    totalHealsOnTeammates: Optional[int] = None
     totalMinionsKilled: int
     totalTimeCCDealt: int
-    totalTimeSpentDead: int
+    totalTimeSpentDead: Optional[int] = None
     totalUnitsHealed: int
     tripleKills: int
     trueDamageDealt: int
     trueDamageDealtToChampions: int
     trueDamageTaken: int
     turretKills: int
-    turretTakedowns: int
-    turretsLost: int
+    turretTakedowns: Optional[int] = None
+    turretsLost: Optional[int] = None
     unrealKills: int
     visionScore: int
     visionWardsBoughtInGame: int
@@ -303,7 +303,7 @@ class Tower(BaseModel):
 
 class Objectives(BaseModel):
     baron: Baron
-    champion: Champion
+    champion: Optional[Champion] = None
     dragon: Dragon
     inhibitor: Inhibitor
     riftHerald: RiftHerald
@@ -320,11 +320,11 @@ class Team(BaseModel):
 class GameDetails(BaseModel):
     gameCreation: int
     gameDuration: int
-    gameEndTimestamp: int
+    gameEndTimestamp: Optional[int] = None
     gameId: int
     gameMode: str
-    gameName: str
-    gameStartTimestamp: int
+    gameName: Optional[str] = None
+    gameStartTimestamp: Optional[int] = None
     gameType: str
     gameVersion: str
     mapId: int
@@ -333,4 +333,4 @@ class GameDetails(BaseModel):
     queueId: int
     seasonId: int
     teams: List[Team]
-    tournamentCode: str
+    tournamentCode: Optional[str] = None

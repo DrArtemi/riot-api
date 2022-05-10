@@ -82,14 +82,11 @@ class PlayerData:
             # FIXME: This is turbo SUS, some JSONs marked as Riot API v5 seem to be v4 (didn't find any evidence of V4 in fields)
             try:
                 gd = GameDetailsV5(**res[0])
-                gd_summoner_name = difflib.get_close_matches(self.player.summonerName.upper(), [p.summonerName.upper() for p in gd.participants], n=1)[0]
-                player_details = [p for p in gd.participants if p.summonerName.upper() == gd_summoner_name][0]
             except:
-                gd = GameDetailsV4(**res[0])
-                gd_summoner_name = difflib.get_close_matches(self.player.summonerName.upper(), [p.player.summonerName.upper() for p in gd.participantIdentities], n=1)[0]
-                gd_participant_id = [p.participantId for p in gd.participantIdentities if p.player.summonerName.upper() == gd_summoner_name][0]
-                player_details = [p for p in gd.participants if p.participantId == gd_participant_id][0]
+                gd = GameDetailsV4(**res[0]).to_v5()
             
+            gd_summoner_name = difflib.get_close_matches(self.player.summonerName.upper(), [p.summonerName.upper() for p in gd.participants], n=1)[0]
+            player_details = [p for p in gd.participants if p.summonerName.upper() == gd_summoner_name][0]
             # FIXME: Exclude perks.styles for the moment
             dataframes.append(json_normalize(data=player_details.dict(exclude={"perks.styles"})))
         return pd.concat(dataframes, axis=0)

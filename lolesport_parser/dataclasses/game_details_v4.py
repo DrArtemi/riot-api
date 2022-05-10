@@ -7,6 +7,8 @@ from __future__ import annotations
 from typing import List
 
 from pydantic import BaseModel, Field
+from pyrsistent import v
+from lolesport_parser.dataclasses.game_details_v5 import GameDetails as GameDetailsV5
 
 
 class Ban(BaseModel):
@@ -208,3 +210,105 @@ class GameDetails(BaseModel):
     teams: List[Team]
     participants: List[Participant]
     participantIdentities: List[ParticipantIdentity]
+
+    def to_v5(self):
+        
+        participants = list()
+        for i, participant in enumerate(self.participants):
+            participants.append({
+                "assists": participant.stats.assists,
+                "champLevel": participant.stats.champLevel,
+                "championId": participant.championId,
+                "damageDealtToObjectives": participant.stats.damageDealtToObjectives,
+                "damageDealtToTurrets": participant.stats.damageDealtToTurrets,
+                "damageSelfMitigated": participant.stats.damageSelfMitigated,
+                "deaths": participant.stats.deaths,
+                "doubleKills": participant.stats.doubleKills,
+                "firstBloodAssist": participant.stats.firstBloodAssist,
+                "firstBloodKill": participant.stats.firstBloodKill,
+                "firstTowerAssist": participant.stats.firstTowerAssist,
+                "firstTowerKill": participant.stats.firstTowerKill,
+                "goldEarned": participant.stats.goldEarned,
+                "goldSpent": participant.stats.goldSpent,
+                "inhibitorKills": participant.stats.inhibitorKills,
+                "item0": participant.stats.item0,
+                "item1": participant.stats.item1,
+                "item2": participant.stats.item2,
+                "item3": participant.stats.item3,
+                "item4": participant.stats.item4,
+                "item5": participant.stats.item5,
+                "item6": participant.stats.item6,
+                "killingSprees": participant.stats.killingSprees,
+                "kills": participant.stats.kills,
+                "lane": participant.timeline.lane,
+                "largestCriticalStrike": participant.stats.largestCriticalStrike,
+                "largestKillingSpree": participant.stats.largestKillingSpree,
+                "largestMultiKill": participant.stats.largestMultiKill,
+                "longestTimeSpentLiving": participant.stats.longestTimeSpentLiving,
+                "magicDamageDealt": participant.stats.magicDamageDealt,
+                "magicDamageDealtToChampions": participant.stats.magicDamageDealtToChampions,
+                "magicDamageTaken": participant.stats.magicalDamageTaken,
+                "neutralMinionsKilled": participant.stats.neutralMinionsKilled,
+                "participantId": participant.participantId,
+                "pentaKills": participant.stats.pentaKills,
+                "physicalDamageDealt": participant.stats.physicalDamageDealt,
+                "physicalDamageDealtToChampions": participant.stats.physicalDamageDealtToChampions,
+                "physicalDamageTaken": participant.stats.physicalDamageTaken,
+                "profileIcon": self.participantIdentities[i].player.profileIcon,
+                "quadraKills": participant.stats.quadraKills,
+                "role": participant.timeline.role,
+                "sightWardsBoughtInGame": participant.stats.sightWardsBoughtInGame,
+                "spell1Id": participant.spell1Id,
+                "spell2Id": participant.spell2Id,
+                "summonerName": self.participantIdentities[i].player.summonerName,
+                "teamId": participant.teamId,
+                "timeCCingOthers": participant.stats.timeCCingOthers,
+                "totalDamageDealt": participant.stats.totalDamageDealt,
+                "totalDamageDealtToChampions": participant.stats.totalDamageDealtToChampions,
+                "totalDamageTaken": participant.stats.totalDamageTaken,
+                "totalHeal": participant.stats.totalHeal,
+                "totalMinionsKilled": participant.stats.totalMinionsKilled,
+                "totalTimeCCDealt": participant.stats.totalTimeCrowdControlDealt,
+                "totalUnitsHealed": participant.stats.totalUnitsHealed,
+                "tripleKills": participant.stats.tripleKills,
+                "trueDamageDealt": participant.stats.tripleKills,
+                "trueDamageDealtToChampions": participant.stats.tripleKills,
+                "trueDamageTaken": participant.stats.tripleKills,
+                "turretKills": participant.stats.turretKills,
+                "unrealKills": participant.stats.unrealKills,
+                "visionScore": participant.stats.visionScore,
+                "visionWardsBoughtInGame": participant.stats.visionWardsBoughtInGame,
+                "wardsKilled": participant.stats.wardsKilled,
+                "wardsPlaced": participant.stats.wardsPlaced,
+                "win": participant.stats.win,
+            })
+            
+        teams = list()
+        for team in self.teams:
+            teams.append({
+                "teamId": team.teamId,
+                "win": team.win == "Win",
+                "bans": team.bans,
+                "objectives": {
+                    "baron": {"first": team.firstBaron, "kills": team.baronKills},
+                    "dragon": {"first": team.firstDragon, "kills": team.dragonKills},
+                    "inhibitor": {"first": team.firstInhibitor, "kills": team.inhibitorKills},
+                    "riftHerald": {"first": team.firstRiftHerald, "kills": team.riftHeraldKills},
+                    "tower": {"first": team.firstTower, "kills": team.towerKills}
+                }
+            })
+        
+        return GameDetailsV5(
+            gameId=self.gameId,
+            platformId=self.platformId,
+            gameCreation=self.gameCreation,
+            gameDuration=self.gameDuration,
+            queueId=self.queueId,
+            mapId=self.mapId,
+            seasonId=self.seasonId,
+            gameVersion=self.gameVersion,
+            gameMode=self.gameMode,
+            gameType=self.gameType,
+            participants=participants,
+            teams=teams,
+        )
